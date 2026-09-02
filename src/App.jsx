@@ -9,30 +9,39 @@ function App() {
   const [hostedContent, setHostedContent] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    checkIfHostedSite()
-  }, [])
+  useEffect(() => { checkIfHostedSite() }, [])
 
   async function checkIfHostedSite() {
-    const host = window.location.hostname
-    // e.g. test.gwiji.com -> subdomain = test
-    // localhost or main domain -> show dashboard
+    const path = window.location.pathname
+    const params = new URLSearchParams(window.location.search)
+    let sub = null
 
-    const parts = host.split('.')
-    // If more than 2 parts and not github.dev and not vercel.app
-    if (parts.length > 2 &&!host.includes('github.dev') &&!host.includes('localhost')) {
-      const sub = parts[0]
-      // Don't treat www as subdomain
-      if (sub!== 'www') {
-        const { data } = await supabase.from('sites').select('*').eq('subdomain', sub).single()
-        if (data) {
-          setHostedContent(data.html_content)
-          setLoading(false)
-          return
-        }
+    // METHOD 1:?site=test
+    if (params.get('site')) {
+      sub = params.get('site')
+    }
+    // METHOD 2: /site/test
+    else if (path.startsWith('/site/')) {
+      sub = path.replace('/site/', '').split('/')[0]
+    }
+    // METHOD 3: real subdomain (when you buy domain later)
+    else {
+      const host = window.location.hostname
+      const parts = host.split('.')
+      if (parts.length > 2 &&!host.includes('github.dev') &&!host.includes('localhost') &&!host.includes('vercel.app')) {
+        const maybeSub = parts[0]
+        if (maybeSub!== 'www') sub = maybeSub
       }
     }
-    // If not a hosted site, show dashboard
+
+    if (sub) {
+      const { data } = await supabase.from('sites').select('*').eq('subdomain', sub).single()
+      if (data) {
+        setHostedContent(data.html_content)
+        setLoading(false)
+        return
+      }
+    }
     fetchSites()
     setLoading(false)
   }
@@ -48,20 +57,17 @@ function App() {
     const { error } = await supabase.from('sites').insert([{ subdomain: cleanSub, name, html_content: html }])
     if(error) alert(error.message)
     else {
-      alert(`Created! Will be live at: ${cleanSub}.yourdomain.com after you connect domain!`)
+      alert(`Created! Live at: gwiji-hosting-app.vercel.app/?site=${cleanSub}`)
       setSubdomain(''); setName('')
       fetchSites()
     }
   }
 
   if (loading) return <div style={{padding:20}}>Loading...</div>
-
-  // IF IT'S A HOSTED SITE, SHOW ONLY THAT HTML
   if (hostedContent) {
     return <div dangerouslySetInnerHTML={{__html: hostedContent}} />
   }
 
-  // OTHERWISE SHOW DASHBOARD (your screenshot)
   return (
     <div style={{padding: '20px', maxWidth: '600px', margin: 'auto', fontFamily: 'sans-serif'}}>
       <h1>🚀 Gwiji Host</h1>
@@ -71,7 +77,14 @@ function App() {
       <textarea placeholder="HTML" value={html} onChange={e=>setHtml(e.target.value)} style={{width:'100%', height:'100px', padding:'10px', margin:'5px 0'}}/>
       <button onClick={createSite} style={{width:'100%', padding:'12px', background:'black', color:'white', border:'none', marginTop:'10px'}}>Create Site</button>
       <h2 style={{marginTop:'30px'}}>My Sites</h2>
-      {sites.map(s => (<div key={s.id} style={{border:'1px solid #ddd', padding:'10px', margin:'5px 0'}}><b>{s.name}</b> - {s.subdomain}</div>))}
+      {sites.map(s => (
+        <div key={s.id} style={{border:'1px solid #ddd', padding:'10px', margin:'5px 0'}}>
+          <b>{s.name}</b> - {s.subdomain} <br/>
+          <a href={`/?site=${s.subdomain}`} target="_blank" style={{fontSize:'12px', color:'blue'}}>
+            View: /?site={s.subdomain}
+          </a>
+        </div>
+      ))}
     </div>
   )
 }

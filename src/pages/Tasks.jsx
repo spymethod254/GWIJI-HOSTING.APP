@@ -9,12 +9,14 @@ export default function Tasks(){
   const [tasks, setTasks] = useState([])
   const [doneIds, setDoneIds] = useState([])
 
-  useEffect(()=>{ 
+  useEffect(()=>{
     supabase.from('weekly_tasks').select('*').then(({data})=>setTasks(data||[]))
-    supabase.from('task_submissions').select('task_id').eq('user_id', user?.id).then(({data})=>{
-      if(data) setDoneIds(data.map(d=>d.task_id))
-    })
-  },[])
+    if(user?.id){
+      supabase.from('task_submissions').select('task_id').eq('user_id', user?.id).then(({data})=>{
+        if(data) setDoneIds(data.map(d=>d.task_id))
+      })
+    }
+  },[user])
 
   const submit = async (t)=>{
     if(t.day_name!==today) return alert(`🔒 Come back on ${t.day_name}. Today is ${today}`)
@@ -30,19 +32,18 @@ export default function Tasks(){
 
   return <div style={{padding:14, maxWidth:420, margin:'0 auto', background:'#000', minHeight:'100vh', color:'white', boxSizing:'border-box'}}>
 
-      {/* Checkin Banner Inside Tasks */}
+    {/* Checkin Banner Inside Tasks */}
     <a href="/checkin" style={{display:'block', background:'linear-gradient(90deg, #0f7f8a 0%, #6a3db5 100%)', padding:12, borderRadius:14, color:'white', textDecoration:'none', fontWeight:'bold', textAlign:'center', marginBottom:12}}>
       📅 Daily Checkin +5 KSH → Tap to Checkin 🔥
     </a>
 
+    {/* NEW: Today Daily Style Button */}
+    <a href="/daily" style={{display:'block', background:'linear-gradient(90deg,#0f7f8a,#6a3db5)', padding:10, borderRadius:12, color:'white', textDecoration:'none', fontSize:13, fontWeight:'bold', textAlign:'center', marginBottom:12}}>
+      📅 Today: {today} → Open Today's Special Design 🚀
+    </a>
+
     <h2 style={{margin:'8px 0 2px'}}>📝 Tasks</h2>
     <p style={{fontSize:12, color:'#888', margin:'0 0 14px'}}>Today is <b style={{color:'white'}}>{today}</b> • Only today's tasks can be submitted</p>
-
-// In your Tasks.jsx or Navbar
-const today = new Date().toLocaleDateString('en-US',{weekday:'long'})
-<a href="/daily" style={{background:'linear-gradient(90deg,#0f7f8a,#6a3db5)', padding:'8px 12px', borderRadius:10, color:'white', textDecoration:'none', fontSize:13}}>
-  📅 Today: {today} →
-</a>
 
     {/* Today Tasks */}
     {todayTasks.length===0 && <div style={{background:'#111', padding:20, borderRadius:16, textAlign:'center', color:'#666', marginTop:20}}>No tasks for today 😴<br/><small>Check tomorrow!</small></div>}
@@ -56,8 +57,8 @@ const today = new Date().toLocaleDateString('en-US',{weekday:'long'})
         </div>
         {t.description && <p style={{fontSize:12, color:'#888', margin:'8px 0'}}>{t.description}</p>}
         <a href={t.link} target="_blank" rel="noreferrer" style={{display:'block', background:'#1a1a1a', padding:10, borderRadius:10, color:'#60a5fa', fontSize:12, wordBreak:'break-all', textDecoration:'none', margin:'8px 0', border:'1px solid #222'}}>🔗 {t.link}</a>
-        <button onClick={()=>submit(t)} disabled={isDone} style={{width:'100%', padding:12, marginTop:6, background: isDone ? '#222' : 'linear-gradient(90deg, #0f7f8a 0%, #6a3db5 100%)', color:'white', border:'none', borderRadius:12, fontWeight:'bold', cursor:'pointer'}}>
-          {isDone ? 'Submitted ✅ Waiting' : 'Submit Task'}
+        <button onClick={()=>submit(t)} disabled={isDone} style={{width:'100%', padding:12, marginTop:6, background: isDone? '#222' : 'linear-gradient(90deg, #0f7f8a 0%, #6a3db5 100%)', color:'white', border:'none', borderRadius:12, fontWeight:'bold', cursor:'pointer'}}>
+          {isDone? 'Submitted ✅ Waiting' : 'Submit Task'}
         </button>
       </div>
     })}

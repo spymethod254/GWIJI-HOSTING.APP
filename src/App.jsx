@@ -8,7 +8,8 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Tasks from './pages/Tasks'
 import Dashboard from './pages/Dashboard'
-import Hosting from './pages/Hosting' // <-- ADD THIS
+import Hosting from './pages/Hosting'
+import Checkin from './pages/Checkin'
 
 function Protected({children}){ 
   const {user, loading} = useAuth(); 
@@ -24,6 +25,7 @@ function Layout(){
     <CheckinPopup/>
     <Routes>
       <Route path="/" element={<Protected><Dashboard/></Protected>}/>
+      <Route path="/checkin" element={<Protected><Checkin/></Protected>}/>
       <Route path="/profile" element={<Protected><Profile/></Protected>}/>
       <Route path="/tasks" element={<Protected><Tasks/></Protected>}/>
       <Route path="/main" element={<Protected><Dashboard/></Protected>}/>

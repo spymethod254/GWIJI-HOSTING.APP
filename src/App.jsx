@@ -180,7 +180,7 @@ function App() {
 
         {active==='main' && (
           <div><h2>Main Balance: {mainBal} KSH</h2>
-          <p>Withdraw when card reaches 100 KSH or all cards total 100 KSH -> moves to main, then withdraw to M-Pesa</p>
+          <p>Withdraw when card reaches 100 KSH or all cards total 100 KSH moves to main, then withdraw to M-Pesa</p>
           <input placeholder="M-Pesa / Airtel number" id="mpesa" style={{width:'100%', padding:12, background:'#222', border:'1px solid #333', color:'white', borderRadius:8, marginTop:10}}/>
           <select style={{width:'100%', padding:12, background:'#222', color:'white', borderRadius:8, marginTop:8}}><option>M-PESA</option><option>Airtel Money</option><option>PayPal (Future)</option></select>
           <button onClick={()=>alert('Withdrawal requested! Admin will pay')} style={{width:'100%', padding:12, background:'white', color:'black', border:'none', borderRadius:8, marginTop:10}}>Withdraw</button>

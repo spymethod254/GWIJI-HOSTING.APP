@@ -25,9 +25,9 @@ function Layout(){
     <Route path="/main" element={<Protected><Dashboard/></Protected>}/>
     <Route path="/all" element={<Protected><Dashboard/></Protected>}/>
     <Route path="/hosting" element={<Protected><div style={{padding:15}}>Buy Domains Coming Soon - Hosting works via?site=xxx</div></Protected>}/>
-    <Route path="/boosting" element={<Protected><div style={{padding:15}}>Social Boosting - 100 followers 200 KSH</div></Protected>}/>
-    <Route path="/gwijigram" element={<Protected><div style={{padding:15}}><a href="https://gwijigram.com" style={{color:'#60a5fa'}}>Open GWIJIGRAM</a></div></Protected>}/>
-    <Route path="/whatsapp" element={<Protected><div style={{padding:15}}><a href="https://wa.me/254700000000" style={{background:'#25D366', padding:12, color:'white', borderRadius:8, textDecoration:'none', display:'block', textAlign:'center'}}>WhatsApp Support</a></div></Protected>}/>
+    <Route path="/boosting" element={<Protected><div style={{padding:15}}>Social Boosting - 70 followers 200 KSH</div></Protected>}/>
+    <Route path="/gwijigram" element={<Protected><div style={{padding:15}}><a href="https://gwijitech-linkup-gules.vercel.app" style={{color:'#60a5fa'}}>Open GWIJIGRAM</a></div></Protected>}/>
+    <Route path="/whatsapp" element={<Protected><div style={{padding:15}}><a href="https://wa.me/254789320869" style={{background:'#25D366', padding:12, color:'white', borderRadius:8, textDecoration:'none', display:'block', textAlign:'center'}}>WhatsApp Support</a></div></Protected>}/>
     <Route path="/support" element={<Protected><div style={{padding:15}}>support@gwijigram.com</div></Protected>}/>
   </Routes></>
 }

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Navbar from './components/Navbar'
 import CheckinPopup from './components/CheckinPopup'
 import Profile from './pages/Profile'
+import DailyTaskWrapper from './pages/daily/DailyTaskWrapper'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Tasks from './pages/Tasks'
@@ -26,6 +27,7 @@ function Layout(){
     <Routes>
       <Route path="/" element={<Protected><Dashboard/></Protected>}/>
       <Route path="/checkin" element={<Protected><Checkin/></Protected>}/>
+      <Route path="/daily" element={<DailyTaskWrapper />} />
       <Route path="/profile" element={<Protected><Profile/></Protected>}/>
       <Route path="/tasks" element={<Protected><Tasks/></Protected>}/>
       <Route path="/main" element={<Protected><Dashboard/></Protected>}/>

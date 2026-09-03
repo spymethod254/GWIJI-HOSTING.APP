@@ -6,13 +6,14 @@ export default function Navbar({show, setShow}){
   const loc = useLocation()
   const links = [
     ['/','📊 Dashboard'],
-    ['/profile','👤 Profile'],
+    ['/checkin','📅 Daily Checkin 🔥'], // <-- NEW HERE
+    ['/tasks','📝 Tasks'],
     ['/main','💰 Main Balance'],
     ['/all','💳 All Account Balance'],
     ['/hosting','🌐 Buy Domains'],
     ['/boosting','🚀 Social Boosting'],
     ['/gwijigram','💜 GWIJIGRAM WEB'],
-    ['/tasks','📝 Tasks'],
+    ['/profile','👤 Profile'],
     ['/whatsapp','💬 WhatsApp Support'],
     ['/support','🛟 Support'],
   ]
@@ -34,16 +35,23 @@ export default function Navbar({show, setShow}){
           <div style={{background:'#0a0a0a', padding:10, display:'grid', gap:7, position:'relative', zIndex:16, borderBottom:'1px solid #1a1a1a', animation:'slideDown 0.25s ease'}}>
             {links.map(([to,label])=>{
               const active = loc.pathname===to
+              const isCheckin = to==='/checkin'
               return <Link key={to} to={to} onClick={()=>setShow(false)} style={{
                 padding:'12px 14px', 
-                background: active ? 'linear-gradient(90deg, #0f7f8a 0%, #6a3db5 100%)' : '#151515',
-                color: active ? 'white' : '#aaa', 
+                background: active ? 'linear-gradient(90deg, #0f7f8a 0%, #6a3db5 100%)' : isCheckin ? '#0f1f1f' : '#151515',
+                color: active ? 'white' : isCheckin ? '#2ee5ff' : '#aaa', 
                 textDecoration:'none', 
                 borderRadius:12,
-                fontWeight: active ? 'bold' : 'normal',
-                border: active ? 'none' : '1px solid #222',
-                fontSize:14
-              }}>{label}</Link>
+                fontWeight: active || isCheckin ? 'bold' : 'normal',
+                border: active ? 'none' : isCheckin ? '1px solid #0f7f8a' : '1px solid #222',
+                fontSize:14,
+                display:'flex',
+                justifyContent:'space-between',
+                alignItems:'center'
+              }}>
+                <span>{label}</span>
+                {isCheckin && !active && <span style={{background:'#0f7f8a', color:'white', fontSize:10, padding:'2px 6px', borderRadius:6}}>+5 KSH</span>}
+              </Link>
             })}
             <button onClick={logout} style={{padding:12, background:'#ff2a2a', color:'white', border:'none', borderRadius:12, fontWeight:'bold', marginTop:4}}>🚪 Logout</button>
           </div>

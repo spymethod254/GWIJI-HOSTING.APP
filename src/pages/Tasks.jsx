@@ -29,6 +29,11 @@ export default function Tasks(){
   const other = tasks.filter(t=>t.day_name!==today)
 
   return <div style={{padding:14, maxWidth:420, margin:'0 auto', background:'#000', minHeight:'100vh', color:'white', boxSizing:'border-box'}}>
+      {/* Checkin Banner Inside Tasks */}
+    <a href="/checkin" style={{display:'block', background:'linear-gradient(90deg, #0f7f8a 0%, #6a3db5 100%)', padding:12, borderRadius:14, color:'white', textDecoration:'none', fontWeight:'bold', textAlign:'center', marginBottom:12}}>
+      📅 Daily Checkin +5 KSH → Tap to Checkin 🔥
+    </a>
+
     <h2 style={{margin:'8px 0 2px'}}>📝 Tasks</h2>
     <p style={{fontSize:12, color:'#888', margin:'0 0 14px'}}>Today is <b style={{color:'white'}}>{today}</b> • Only today's tasks can be submitted</p>
 

@@ -1,26 +1,31 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 
-export default function Thursday({task, user, dayName}){
+export default function Thursday({task, user}){
   const [proof,setProof]=useState('')
   const [done,setDone]=useState(false)
   const [loading,setLoading]=useState(false)
 
   useEffect(()=>{
     async function check(){
-      const {data} = await supabase.from('task_submissions').select('id').eq('user_id', user.id).eq('task_id', task.id).maybeSingle()
+      if(!user?.id || !task?.id) return
+      const {data} = await supabase.from('task_submissions')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('task_id', task.id)
+        .maybeSingle()
       if(data) setDone(true)
     }
-    if(user?.id) check()
-  },[user, task])
+    check()
+  },[user?.id, task?.id])
 
   async function submit(){
-    if(!proof) return alert('Paste your invite proof! Eg: friend phone or screenshot link')
+    if(!proof.trim()) return alert('Paste your invite proof! Eg: friend phone or screenshot link')
     setLoading(true)
     const {error} = await supabase.from('task_submissions').insert([{
       user_id: user.id,
       task_id: task.id,
-      day_name: dayName,
+      day_name: task.day_name,
       proof_link: proof,
       earned: task.reward,
       status: 'pending'
@@ -32,8 +37,12 @@ export default function Thursday({task, user, dayName}){
   }
 
   async function copyLink(){
-    navigator.clipboard.writeText(task.link)
-    alert('Invite link copied! Share it: ' + task.link)
+    try{
+      await navigator.clipboard.writeText(task.link)
+      alert('Invite link copied! Share it: ' + task.link)
+    } catch {
+      prompt('Copy this link:', task.link)
+    }
   }
 
   return <div style={{background:'#000', minHeight:'100vh', padding:12, color:'white', boxSizing:'border-box'}}>

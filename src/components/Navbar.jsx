@@ -5,6 +5,7 @@ export default function Navbar({show, setShow}){
   const loc = useLocation()
   const links = [
     ['/','📊 Dashboard'],
+    ['/profile','👤 Profile'],
     ['/main','💰 Main Balance'],
     ['/all','💳 All Account Balance'],
     ['/hosting','🌐 Buy Domains'],

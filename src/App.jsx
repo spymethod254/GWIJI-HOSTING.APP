@@ -7,31 +7,42 @@ import Profile from './pages/Profile'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Tasks from './pages/Tasks'
-import { supabase } from './lib/supabase'
-import { useEffect } from 'react'
+import Dashboard from './pages/Dashboard'
+import Hosting from './pages/Hosting' // <-- ADD THIS
 
-function Dashboard(){
-  const {user} = useAuth()
-  const [bal, setBal] = useState(0)
-  useEffect(()=>{ supabase.from('task_submissions').select('*').eq('user_id', user.id).eq('status','approved').then(({data})=>setBal(data?.reduce((a,b)=>a+b.earned,0)||0)) },[])
-  return <div style={{padding:15, maxWidth:600, margin:'auto'}}><h2>Dashboard</h2><div style={{background:'#1a1a1a', padding:15, borderRadius:12}}><p>Main Balance</p><h1>{bal} KSH</h1><small>{user.phone}</small></div></div>
+function Protected({children}){ 
+  const {user, loading} = useAuth(); 
+  if(loading) return <div style={{padding:20, color:'white', background:'#000', minHeight:'100vh'}}>Loading...</div>; 
+  if(!user) return <Navigate to="/login"/>; 
+  return children 
 }
-function Protected({children}){ const {user, loading} = useAuth(); if(loading) return <p>Loading...</p>; if(!user) return <Navigate to="/login"/>; return children }
 
 function Layout(){
   const [show, setShow] = useState(false)
-  return <><Navbar show={show} setShow={setShow}/><CheckinPopup/><Routes>
-    <Route path="/" element={<Protected><Dashboard/></Protected>}/>
-    <Route path="/profile" element={<Protected><Profile/></Protected>}/>
-    <Route path="/tasks" element={<Protected><Tasks/></Protected>}/>
-    <Route path="/main" element={<Protected><Dashboard/></Protected>}/>
-    <Route path="/all" element={<Protected><Dashboard/></Protected>}/>
-    <Route path="/hosting" element={<Protected><div style={{padding:15}}>Buy Domains Coming Soon - Hosting works via?site=xxx</div></Protected>}/>
-    <Route path="/boosting" element={<Protected><div style={{padding:15}}>Social Boosting - 70 followers 200 KSH</div></Protected>}/>
-    <Route path="/gwijigram" element={<Protected><div style={{padding:15}}><a href="https://gwijitech-linkup-gules.vercel.app" style={{color:'#60a5fa'}}>Open GWIJIGRAM</a></div></Protected>}/>
-    <Route path="/whatsapp" element={<Protected><div style={{padding:15}}><a href="https://wa.me/254789320869" style={{background:'#25D366', padding:12, color:'white', borderRadius:8, textDecoration:'none', display:'block', textAlign:'center'}}>WhatsApp Support</a></div></Protected>}/>
-    <Route path="/support" element={<Protected><div style={{padding:15}}>support@gwijigram.com</div></Protected>}/>
-  </Routes></>
+  return <>
+    <Navbar show={show} setShow={setShow}/>
+    <CheckinPopup/>
+    <Routes>
+      <Route path="/" element={<Protected><Dashboard/></Protected>}/>
+      <Route path="/profile" element={<Protected><Profile/></Protected>}/>
+      <Route path="/tasks" element={<Protected><Tasks/></Protected>}/>
+      <Route path="/main" element={<Protected><Dashboard/></Protected>}/>
+      <Route path="/all" element={<Protected><Dashboard/></Protected>}/>
+      <Route path="/hosting" element={<Protected><Hosting/></Protected>}/>
+      <Route path="/boosting" element={<Protected>
+        <div style={{padding:14, maxWidth:420, margin:'0 auto', background:'#000', minHeight:'100vh', color:'white'}}>
+          <h3>🚀 Social Boosting</h3>
+          <div style={{background:'#111', border:'1px solid #222', padding:14, borderRadius:16, marginTop:10}}>
+            <b>70 followers 200 KSH</b><br/><small style={{color:'#888'}}>Contact admin via WhatsApp</small><br/>
+            <a href="https://wa.me/254789320869" style={{display:'block', marginTop:10, padding:12, background:'linear-gradient(90deg, #0f7f8a 0%, #6a3db5 100%)', color:'white', textAlign:'center', borderRadius:12, textDecoration:'none', fontWeight:'bold'}}>Order Now</a>
+          </div>
+        </div>
+      </Protected>}/>
+      <Route path="/gwijigram" element={<Protected><div style={{padding:20, background:'#000', minHeight:'100vh', textAlign:'center'}}><a href="https://gwijitech-linkup-gules.vercel.app" style={{color:'white', background:'linear-gradient(90deg, #0f7f8a 0%, #6a3db5 100%)', padding:'12px 20px', borderRadius:12, textDecoration:'none', fontWeight:'bold'}}>💜 Open GWIJIGRAM WEB</a></div></Protected>}/>
+      <Route path="/whatsapp" element={<Protected><div style={{padding:20, background:'#000', minHeight:'100vh'}}><a href="https://wa.me/254789320869" style={{background:'#25D366', padding:14, color:'white', borderRadius:12, textDecoration:'none', display:'block', textAlign:'center', fontWeight:'bold'}}>💬 WhatsApp Support</a></div></Protected>}/>
+      <Route path="/support" element={<Protected><div style={{padding:20, background:'#000', minHeight:'100vh', color:'white'}}>support@gwijigram.com<br/><small style={{color:'#888'}}>Mombasa, KE</small></div></Protected>}/>
+    </Routes>
+  </>
 }
 
 export default function App(){
